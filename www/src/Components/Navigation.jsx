@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Nav, NavDropdown, Navbar, Button, Modal } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -50,74 +50,30 @@ const Navigation = () => {
 	let eventKey = 0;
 
 	return (
-		<Navbar
-			collapseOnSelect
-			bg="primary"
-			variant="dark"
-			expand="md"
-			fixed="top"
-		>
-			<Navbar.Brand href="/" title={`GP2040-CE ${t('Navigation:home-label')}`}>
-				<img
-					src="images/logo.png"
-					className="title-logo"
-					alt="GP2040-CE logo"
-				/>{' '}
+		<Navbar collapseOnSelect expand="md" fixed="top">
+			<Navbar.Brand title={`GP2040-CE ${t('Navigation:home-label')}`}>
+				<Nav.Link as={NavLink} to="/" eventKey={eventKey++}>
+					<img
+						src="images/logo.png"
+						className="title-logo"
+						alt="GP2040-CE logo"
+					/>
+				</Nav.Link>
 			</Navbar.Brand>
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse id="basic-navbar-nav">
-				<Nav className="me-auto">
+				<Nav className="me-auto nav-menu">
 					<Nav.Link as={NavLink} to="/settings" eventKey={eventKey++}>
 						{t('Navigation:settings-label')}
 					</Nav.Link>
 					<NavDropdown title={t('Navigation:config-label')}>
-						<NavDropdown.Item	
+						<NavDropdown.Item
 							as={NavLink}
 							eventKey={eventKey++}
 							to="/pin-mapping"
 						>
 							{t('Navigation:pin-mapping-label')}
 						</NavDropdown.Item>
-						{/*
-						<NavDropdown.Item
-							as={NavLink}
-							eventKey={eventKey++}
-							to="/peripheral-mapping"
-						>
-							{t('Navigation:peripheral-mapping-label')}
-						</NavDropdown.Item>
-						<NavDropdown.Item
-							as={NavLink}
-							eventKey={eventKey++}
-							to="/led-config"
-						>
-							{t('Navigation:led-config-label')}
-						</NavDropdown.Item>
-						<NavDropdown.Item
-							as={NavLink}
-							eventKey={eventKey++}
-							to="/custom-theme"
-						>
-							{t('Navigation:custom-theme-label')}
-						</NavDropdown.Item>
-						<NavDropdown.Item
-							as={NavLink}
-							eventKey={eventKey++}
-							to="/display-config"
-						>
-							{t('Navigation:display-config-label')}
-						</NavDropdown.Item>
-						<NavDropdown.Item as={NavLink} eventKey={eventKey++} to="/add-ons">
-							{t('Navigation:add-ons-label')}
-						</NavDropdown.Item>
-						<NavDropdown.Item as={NavLink} eventKey={eventKey++} to="/macro">
-							{t('Navigation:macro-label')}
-						</NavDropdown.Item>
-						<NavDropdown.Item as={NavLink} eventKey={eventKey++} to="/backup">
-							{t('Navigation:backup-label')}
-						</NavDropdown.Item>
-						*/}
-
 						<NavDropdown.Item
 							as={NavLink}
 							eventKey={eventKey++}

@@ -1,14 +1,16 @@
 export default {
-	'language-selector': {
-		'en-GB': 'English (Inglês Reino Unido)',
-		en: 'English (Inglês)',
-		nl: 'Nederlands (Holandês)',
-		'pt-BR': 'Português Brasil',
-		'zh-CN': '简体中文 (Chinês simplificado)',
-		'de-DE': 'Deutsch (Alemão)',
-		'ja-JP': '日本語 (Japonesa)',
-		'ko-KR': '한국어 (coreano)',
-	},
+'language-selector': {
+  en: 'English (US)',
+  nl: 'Nederlands (Holandês)',
+  'pt-BR': 'Português Brasil',
+  'zh-CN': '简体中文 (Chinês Simplificado)',
+  'de-DE': 'Deutsch (Alemão)',
+  'ja-JP': '日本語 (Japonês)',
+  'ko-KR': '한국어 (Coreano)',
+  'es-MX': 'Español (México)',
+  'tr-TR': 'Türkçe (Turco)',
+  'fr-FR': 'Français (Francês)',
+},
 	'color-scheme': {
 		dark: 'Escuro',
 		light: 'Claro',
@@ -16,7 +18,5 @@ export default {
 	},
 	'keyboard-mapper': {
 		'key-header': 'Tecla',
-		'error-conflict': 'A tecla {{key}} já está atribuída',
-		'error-invalid': '{{key}} é inválida para esta placa',
 	},
 };

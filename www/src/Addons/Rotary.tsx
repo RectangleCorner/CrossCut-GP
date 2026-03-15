@@ -1,11 +1,11 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 
 import Section from '../Components/Section';
 import FormSelect from '../Components/FormSelect';
 import FormControl from '../Components/FormControl';
-import { FormCheck, Row, Col } from 'react-bootstrap';
+import { FormCheck, Row } from 'react-bootstrap';
+import { AddonPropTypes } from '../Pages/AddonsConfigPage';
 
 const ENCODER_MODES = [
 	{ label: 'encoder-mode-none', value: 0 },
@@ -17,6 +17,7 @@ const ENCODER_MODES = [
 	{ label: 'encoder-mode-right-trigger', value: 6 },
 	{ label: 'encoder-mode-dpad-x', value: 7 },
 	{ label: 'encoder-mode-dpad-y', value: 8 },
+	{ label: 'encoder-mode-volume', value: 9 },
 ];
 
 const ENCODER_MULTIPLES = [
@@ -43,7 +44,10 @@ export const rotaryScheme = {
 		.number()
 		.required()
 		.label('Rotary Encoder Add-On Enabled'),
-	encoderOneEnabled: yup.boolean().required().label('Encoder One Enabled'),
+	encoderOneEnabled: yup
+		.number()
+		.required()
+		.label('Encoder One Enabled'),
 	encoderOnePinA: yup
 		.number()
 		.label('Encoder One Pin A')
@@ -61,11 +65,14 @@ export const rotaryScheme = {
 		.label('Encoder One Reset After')
 		.required(),
 	encoderOneAllowWrapAround: yup
-		.boolean()
+		.number()
 		.required()
 		.label('Encoder One Allow Wrap Around'),
 	encoderOneMultiplier: yup.number().label('Encoder One Multiplier').required(),
-	encoderTwoEnabled: yup.boolean().required().label('Encoder Two Enabled'),
+	encoderTwoEnabled: yup
+		.number()
+		.required()
+		.label('Encoder Two Enabled'),
 	encoderTwoPinA: yup
 		.number()
 		.label('Encoder Two Pin A')
@@ -83,7 +90,7 @@ export const rotaryScheme = {
 		.label('Encoder Two Reset After')
 		.required(),
 	encoderTwoAllowWrapAround: yup
-		.boolean()
+		.number()
 		.required()
 		.label('Encoder Two Allow Wrap Around'),
 	encoderTwoMultiplier: yup.number().label('Encoder Two Multiplier').required(),
@@ -109,10 +116,19 @@ export const rotaryState = {
 	RotaryAddonEnabled: 0,
 };
 
-const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
+const Rotary = ({ values, errors, handleChange, handleCheckbox }: AddonPropTypes) => {
 	const { t } = useTranslation();
 	return (
-		<Section title={t('Rotary:header-text')}>
+		<Section title={
+			<a
+				href="https://gp2040-ce.info/add-ons/rotary-encoders"
+				target="_blank"
+				className="text-reset text-decoration-none"
+			>
+				{t('Rotary:header-text')}
+			</a>
+		}
+		>
 			<div id="RotaryAddonEnabledOptions" hidden={!values.RotaryAddonEnabled}>
 				<Row className="mb-3">
 					<div className="col-3">
@@ -120,12 +136,11 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 						<FormCheck
 							label={t('Common:switch-enabled')}
 							type="switch"
-							id="encoderOneEnabled"
+							id="EncoderOneEnabledButton"
 							isInvalid={false}
 							checked={Boolean(values.encoderOneEnabled)}
-							value={Boolean(values.encoderOneEnabled)}
 							onChange={(e) => {
-								handleCheckbox('encoderOneEnabled', values);
+								handleCheckbox('encoderOneEnabled');
 								handleChange(e);
 							}}
 						/>
@@ -138,7 +153,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								groupClassName="mb-3"
 								value={values.encoderOnePinA}
 								error={errors.encoderOnePinA}
-								isInvalid={errors.encoderOnePinA}
+								isInvalid={Boolean(errors.encoderOnePinA)}
 								onChange={handleChange}
 								min={-1}
 								max={29}
@@ -151,7 +166,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								groupClassName="mb-3"
 								value={values.encoderOnePinB}
 								error={errors.encoderOnePinB}
-								isInvalid={errors.encoderOnePinB}
+								isInvalid={Boolean(errors.encoderOnePinB)}
 								onChange={handleChange}
 								min={-1}
 								max={29}
@@ -164,7 +179,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								groupClassName="mb-3"
 								value={values.encoderOnePPR}
 								error={errors.encoderOnePPR}
-								isInvalid={errors.encoderOnePPR}
+								isInvalid={Boolean(errors.encoderOnePPR)}
 								onChange={handleChange}
 								min={ENCODER_MIN_PPR}
 								max={ENCODER_MAX_PPR}
@@ -177,7 +192,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								groupClassName="mb-3"
 								value={values.encoderOneMultiplier}
 								error={errors.encoderOneMultiplier}
-								isInvalid={errors.encoderOneMultiplier}
+								isInvalid={Boolean(errors.encoderOneMultiplier)}
 								onChange={handleChange}
 								min={ENCODER_MIN_MULTIPLE}
 								max={ENCODER_MAX_MULTIPLE}
@@ -190,7 +205,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								groupClassName="mb-3"
 								value={values.encoderOneResetAfter}
 								error={errors.encoderOneResetAfter}
-								isInvalid={errors.encoderOneResetAfter}
+								isInvalid={Boolean(errors.encoderOneResetAfter)}
 								onChange={handleChange}
 								min={0}
 								max={500}
@@ -202,7 +217,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								groupClassName="mb-3"
 								value={values.encoderOneMode}
 								error={errors.encoderOneMode}
-								isInvalid={errors.encoderOneMode}
+								isInvalid={Boolean(errors.encoderOneMode)}
 								onChange={handleChange}
 							>
 								{ENCODER_MODES.map((o, i) => (
@@ -214,12 +229,11 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 							<FormCheck
 								label={t('Rotary:encoder-allow-wrap-around-label')}
 								type="switch"
-								id="encoderOneAllowWrapAround"
+								id="EncoderOneAllowWrapAround"
 								isInvalid={false}
 								checked={Boolean(values.encoderOneAllowWrapAround)}
-								value={Boolean(values.encoderOneAllowWrapAround)}
 								onChange={(e) => {
-									handleCheckbox('encoderOneAllowWrapAround', values);
+									handleCheckbox('encoderOneAllowWrapAround');
 									handleChange(e);
 								}}
 							/>
@@ -230,12 +244,11 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 						<FormCheck
 							label={t('Common:switch-enabled')}
 							type="switch"
-							id="encoderTwoEnabled"
+							id="EncoderTwoEnabledButton"
 							isInvalid={false}
 							checked={Boolean(values.encoderTwoEnabled)}
-							value={Boolean(values.encoderTwoEnabled)}
 							onChange={(e) => {
-								handleCheckbox('encoderTwoEnabled', values);
+								handleCheckbox('encoderTwoEnabled');
 								handleChange(e);
 							}}
 						/>
@@ -248,7 +261,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								groupClassName="mb-3"
 								value={values.encoderTwoPinA}
 								error={errors.encoderTwoPinA}
-								isInvalid={errors.encoderTwoPinA}
+								isInvalid={Boolean(errors.encoderTwoPinA)}
 								onChange={handleChange}
 								min={-1}
 								max={29}
@@ -261,7 +274,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								groupClassName="mb-3"
 								value={values.encoderTwoPinB}
 								error={errors.encoderTwoPinB}
-								isInvalid={errors.encoderTwoPinB}
+								isInvalid={Boolean(errors.encoderTwoPinB)}
 								onChange={handleChange}
 								min={-1}
 								max={29}
@@ -274,7 +287,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								groupClassName="mb-3"
 								value={values.encoderTwoPPR}
 								error={errors.encoderTwoPPR}
-								isInvalid={errors.encoderTwoPPR}
+								isInvalid={Boolean(errors.encoderTwoPPR)}
 								onChange={handleChange}
 								min={ENCODER_MIN_PPR}
 								max={ENCODER_MAX_PPR}
@@ -287,7 +300,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								groupClassName="mb-3"
 								value={values.encoderTwoMultiplier}
 								error={errors.encoderTwoMultiplier}
-								isInvalid={errors.encoderTwoMultiplier}
+								isInvalid={Boolean(errors.encoderTwoMultiplier)}
 								onChange={handleChange}
 								min={ENCODER_MIN_MULTIPLE}
 								max={ENCODER_MAX_MULTIPLE}
@@ -300,7 +313,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								groupClassName="mb-3"
 								value={values.encoderTwoResetAfter}
 								error={errors.encoderTwoResetAfter}
-								isInvalid={errors.encoderTwoResetAfter}
+								isInvalid={Boolean(errors.encoderTwoResetAfter)}
 								onChange={handleChange}
 								min={0}
 								max={500}
@@ -312,7 +325,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 								groupClassName="mb-3"
 								value={values.encoderTwoMode}
 								error={errors.encoderTwoMode}
-								isInvalid={errors.encoderTwoMode}
+								isInvalid={Boolean(errors.encoderTwoMode)}
 								onChange={handleChange}
 							>
 								{ENCODER_MODES.map((o, i) => (
@@ -324,12 +337,11 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 							<FormCheck
 								label={t('Rotary:encoder-allow-wrap-around-label')}
 								type="switch"
-								id="encoderTwoAllowWrapAround"
+								id="EncoderTwoAllowWrapAround"
 								isInvalid={false}
 								checked={Boolean(values.encoderTwoAllowWrapAround)}
-								value={Boolean(values.encoderTwoAllowWrapAround)}
 								onChange={(e) => {
-									handleCheckbox('encoderTwoAllowWrapAround', values);
+									handleCheckbox('encoderTwoAllowWrapAround');
 									handleChange(e);
 								}}
 							/>
@@ -345,7 +357,7 @@ const Rotary = ({ values, errors, handleChange, handleCheckbox }) => {
 				isInvalid={false}
 				checked={Boolean(values.RotaryAddonEnabled)}
 				onChange={(e) => {
-					handleCheckbox('RotaryAddonEnabled', values);
+					handleCheckbox('RotaryAddonEnabled');
 					handleChange(e);
 				}}
 			/>

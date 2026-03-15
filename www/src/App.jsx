@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import { AppContextProvider } from './Contexts/AppContext';
@@ -28,24 +27,28 @@ const App = () => {
 				<div className="body-content container-lg">
 					<Routes>
 						<Route path="/" element={<HomePage />} />
+						<Route path="/pin-mapping" element={<PinMappingPage/> }/>
+						<Route path="/reset-settings" element={<ResetSettingsPage/> }/>
 						<Route path="/settings" element={<SettingsPage />} />
-						<Route path="/pin-mapping" element={<PinMappingPage />} />
+						{//<Route path="/settings" element={<SettingsPage />} />}
+}
+						
+						{ /*
 						<Route
 							path="/peripheral-mapping"
 							element={<PeripheralMappingPage />}
 						/>
-						<Route path="/reset-settings" element={<ResetSettingsPage />} />
 						<Route path="/led-config" element={<LEDConfigPage />} />
 						<Route path="/custom-theme" element={<CustomThemePage />} />
-						<Route path="/display-config" element={<DisplayConfigPage />} />
-						{
-						//<Route path="/add-ons" element={<AddonsConfigPage />} />
-						}
-						{
-						//<Route path="/backup" element={<BackupPage />} />
-						}
+						<Route path="/display-config" element={<DisplayConfigPage />} /> 
+												
+						<Route path="/add-ons" element={<AddonsConfigPage />} />
+						
 						<Route path="/playground" element={<PlaygroundPage />} />
 						<Route path="/macro" element={<InputMacroAddonPage />} />
+						<Route path="/backup" element={<BackupPage />} /> */
+						}
+						
 					</Routes>
 				</div>
 			</Router>

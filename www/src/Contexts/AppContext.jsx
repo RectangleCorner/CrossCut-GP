@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
 
 import WebApi, { basePeripheralMapping } from '../Services/WebApi';
@@ -13,6 +13,12 @@ let checkExpansionPins = null;
 yup.addMethod(yup.string, 'validateColor', function () {
 	return this.test('', 'Valid hex color required', (value) =>
 		value?.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i),
+	);
+});
+
+yup.addMethod(yup.string, 'validateUSBHexID', function () {
+	return this.test('', 'Valid USB hex ID required', (value) =>
+		value?.match(/^([0-9a-f]{4})$/i),
 	);
 });
 
@@ -102,7 +108,6 @@ export const AppContextProvider = ({ children, ...props }) => {
 		buttonLabelType: newType,
 		swapTpShareLabels: newSwap,
 	}) => {
-		console.log('buttonLabelType is', newType);
 		newType && localStorage.setItem('buttonLabelType', newType);
 		newSwap !== undefined &&
 			localStorage.setItem('swapTpShareLabels', parseBoolean(newSwap));
@@ -183,29 +188,35 @@ export const AppContextProvider = ({ children, ...props }) => {
 	);
 	const [expansionPins, setExpansionPins] = useState({});
 
+	const [HETriggerCalibrations, setHETriggerCalibrations] = useState({});
+
 	const updateUsedPins = async () => {
 		const data = await WebApi.getUsedPins(setLoading);
 		setUsedPins(data.usedPins);
-		console.log('usedPins updated:', data.usedPins);
 		return data;
 	};
 
 	const updateExpansionPins = async () => {
 		const data = await WebApi.getExpansionPins(setLoading);
 		setExpansionPins(data);
-		console.log('expansionPins updated:', data);
+		return data;
+	};
+
+	const updateHETriggerCalibrations = async () => {
+		const data = await WebApi.getHETriggerCalibrations(setLoading);
+		setHETriggerCalibrations(data);
 		return data;
 	};
 
 	const updatePeripherals = async () => {
 		const peripherals = await WebApi.getPeripheralOptions(setLoading);
 		setAvailablePeripherals(peripherals);
-		console.log('availablePeripherals updated:', peripherals);
 	};
 
 	useEffect(() => {
 		updateUsedPins();
 		updateExpansionPins();
+		updateHETriggerCalibrations();
 		updatePeripherals();
 	}, []);
 
@@ -220,9 +231,7 @@ export const AppContextProvider = ({ children, ...props }) => {
 		};
 	}, [usedPins, setUsedPins]);
 
-	console.log('usedPins:', usedPins);
-
-	useEffect(() => {}, [expansionPins, setExpansionPins]);
+	useEffect(() => {}, [expansionPins, setExpansionPins, HETriggerCalibrations, setHETriggerCalibrations]);
 
 	const getAvailablePeripherals = (device) => {
 		// gymnastics to make sure the device is defined before trusting config value
@@ -299,6 +308,7 @@ export const AppContextProvider = ({ children, ...props }) => {
 				availablePeripherals,
 				getAvailablePeripherals,
 				expansionPins,
+				HETriggerCalibrations,
 				getSelectedPeripheral,
 				setButtonLabels,
 				setGradientNormalColor1,
@@ -308,6 +318,8 @@ export const AppContextProvider = ({ children, ...props }) => {
 				setSavedColors,
 				setUsedPins,
 				setExpansionPins,
+				setHETriggerCalibrations,
+				updateHETriggerCalibrations,
 				setAvailablePeripherals,
 				updatePeripherals,
 				updateUsedPins,

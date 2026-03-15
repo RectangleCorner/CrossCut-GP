@@ -217,6 +217,8 @@ async function getDisplayOptions() {
 
 async function setDisplayOptions(options, isPreview) {
 	let newOptions = sanitizeRequest(options);
+	newOptions.enabled = parseInt(options.enabled);
+	newOptions.invertDisplay = parseInt(options.invertDisplay);
 	newOptions.buttonLayout = parseInt(options.buttonLayout);
 	newOptions.buttonLayoutRight = parseInt(options.buttonLayoutRight);
 	newOptions.splashMode = parseInt(options.splashMode);
@@ -461,6 +463,9 @@ async function getAddonsOptions(setLoading) {
 		const data = response.data;
 		setLoading(false);
 
+		response.data.turboLedColor =
+			rgbIntToHex(response.data.turboLedColor) || '#ffffff';
+
 		// Merge saved keyMappings with defaults
 		const keyboardHostMap = Object.entries(data.keyboardHostMap).reduce(
 			(acc, [key, value]) => ({ ...acc, [key]: { ...acc[key], key: value } }),
@@ -612,33 +617,6 @@ async function setPeripheralOptions(mappings) {
 		});
 }
 
-async function getFirmwareVersion(setLoading) {
-	setLoading(true);
-
-	try {
-		const response = await Http.get(`${baseUrl}/api/getFirmwareVersion`);
-		console.log('got firmware version:', response.data);
-		setLoading(false);
-		return response.data;
-	} catch (error) {
-		setLoading(false);
-		console.error(error);
-	}
-}
-
-async function getMemoryReport(setLoading) {
-	setLoading(true);
-
-	try {
-		const response = await Http.get(`${baseUrl}/api/getMemoryReport`);
-		setLoading(false);
-		return response.data;
-	} catch (error) {
-		setLoading(false);
-		console.error(error);
-	}
-}
-
 async function getUsedPins(setLoading) {
 	setLoading(true);
 
@@ -665,6 +643,32 @@ async function setExpansionPins(mappings) {
 	console.dir(mappings);
 
 	return Http.post(`${baseUrl}/api/setExpansionPins`, mappings);
+}
+
+// POST function to get the ADC reading for one Hall Effect channel
+async function getHETriggerVoltage(settings) {
+	return Http.post(`${baseUrl}/api/getHETriggerVoltage`, settings);
+}
+
+// POST function to set our channels, select, and ADC pin
+async function setHETriggerOptions(settings) {
+	return Http.post(`${baseUrl}/api/setHETriggerOptions`, settings);
+}
+
+async function getHETriggerCalibrations() {
+	try {
+		const response = await Http.get(`${baseUrl}/api/getHETriggerCalibrations`);
+		return response.data;
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+// POST to set all Hall Effect Trigger Calibrations
+async function setHETriggerCalibrations(triggers) {
+	console.dir(triggers);
+
+	return Http.post(`${baseUrl}/api/setHETriggerCalibrations`, triggers);
 }
 
 async function getHeldPins(abortSignal) {
@@ -726,14 +730,16 @@ export default {
 	setPeripheralOptions,
 	getExpansionPins,
 	setExpansionPins,
+	getHETriggerVoltage,
+	setHETriggerCalibrations,
+	getHETriggerCalibrations,
+	setHETriggerOptions,
 	getReactiveLEDs,
 	setReactiveLEDs,
 	getButtonLayouts,
 	getButtonLayoutDefs,
 	getSplashImage,
 	setSplashImage,
-	getFirmwareVersion,
-	getMemoryReport,
 	getUsedPins,
 	getHeldPins,
 	abortGetHeldPins,

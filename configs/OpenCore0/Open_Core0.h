@@ -9,13 +9,14 @@
 //       SHOULD ONLY CONSIST OF PREPROCESSOR DIRECTIVES
 // -----------------------------------------------------
 
+
 #ifndef _BOARDS_OPENCORE0_H
 #define _BOARDS_OPENCORE0_H
 
 // For board detection
 #define OPENCORE0WASD
 
-// For crappy crystal
+//For crappy crystal
 #ifndef PICO_XOSC_STARTUP_DELAY_MULTIPLIER
 #define PICO_XOSC_STARTUP_DELAY_MULTIPLIER 64
 #endif
